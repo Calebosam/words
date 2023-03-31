@@ -89,7 +89,6 @@ jobs:
                 "text": {
                   "type": "mrkdwn",
                   "text": "Hi @everyone, a new version of the subsys cli tool is publish",
-                  "color": "#ff0000"
                 }
               },
               {
