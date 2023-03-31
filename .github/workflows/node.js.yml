@@ -82,12 +82,13 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
+           "text": "Publish status: ${{ job.status }}\n,
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "Publish status: ${{ job.status }}",
+                  "text": "Hi @everyone, a new version of the subsys cli tool is publish",
                   "color": "#ff0000"
                 }
               },
