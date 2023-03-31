@@ -82,8 +82,14 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
-            "text": "GitHub Action: ${{ job.status }}\n",
             "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ job.status }}"
+                }
+              },
               {
                 "type": "section",
                 "text": {
