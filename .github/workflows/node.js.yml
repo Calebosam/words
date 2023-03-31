@@ -82,20 +82,20 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
-           "text": "Publish status: ${{ job.status }}\n",
+           "text": "Publish status: ${{ job.status }}",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "Hi @everyone, a new version of the subsys cli tool is publish"
+                  "text": "Hi @everyone, a new version of the #subsys CLI tool is publish on npm :package: :white_check_mark: "
                 }
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "New version available at: \nhttps://www.npmjs.com/package/@amalitech-training/subsys"
+                  "text": "Download new version available at: \nhttps://www.npmjs.com/package/@amalitech-training/subsys"
                 }
               }
             ]
