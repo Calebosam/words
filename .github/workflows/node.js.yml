@@ -87,7 +87,8 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "${{ job.status }}"
+                  "text": "Publish status: ${{ job.status }}",
+                  "color": "#ff0000"
                 }
               },
               {
