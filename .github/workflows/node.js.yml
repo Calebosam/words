@@ -82,7 +82,7 @@ jobs:
         # For posting a rich message using Block Kit
         payload: |
           {
-           "text": "Publish status: ${{ job.status }}\n,
+           "text": "Publish status: ${{ job.status }}\n",
             "blocks": [
               {
                 "type": "section",
