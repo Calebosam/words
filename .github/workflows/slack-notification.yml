@@ -6,6 +6,8 @@ jobs:
   slack-notification:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Send Slack message
         uses: ./
         with:
