@@ -1,0 +1,12 @@
+name: Slack Notification
+
+on: [push, pull_request, issues, issue_comment, pull_request_review_comment]
+
+jobs:
+  slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack message
+        uses: ./
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
