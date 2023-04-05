@@ -1,0 +1,10 @@
+name: Send Slack Notification
+description: Sends a Slack message on every event on GitHub
+author: Your Name
+inputs:
+  slack-bot-token:
+    description: "The Slack bot token for sending messages"
+    required: true
+runs:
+  using: "node12"
+  main: "slack-message.js"
