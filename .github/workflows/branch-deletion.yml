@@ -23,5 +23,10 @@ jobs:
           branches="${{ steps.merged_branches.outputs.stdout }}"
           for branch in $branches; do
             echo "Deleting branch $branch"
-            git push origin --delete "$branch"
+            git push origin --delete "$branch" || echo "Failed to delete branch $branch"
           done
+          
+      - name: Verify deleted branches
+        run: |
+          git fetch --prune --quiet
+          git branch --remote | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$'
