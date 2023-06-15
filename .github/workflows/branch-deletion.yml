@@ -29,4 +29,4 @@ jobs:
       - name: Verify deleted branches
         run: |
           git fetch --prune --quiet
-          git branch --remote | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$'
+          git branch --remote | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$'
