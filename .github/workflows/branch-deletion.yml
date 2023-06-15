@@ -22,7 +22,7 @@ jobs:
 
       - name: Delete branches
         run: |
-          branches="origin/dev"
+          branches="dev"
           for branch in $branches; do
             echo "Deleting branch $branch"
             git push origin --delete "$branch"
