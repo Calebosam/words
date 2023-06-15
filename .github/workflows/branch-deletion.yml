@@ -16,7 +16,7 @@ jobs:
         id: merged_branches
         run: |
           git fetch --prune --quiet
-          merged_branches=$(git branch --merged develop --format='%(refname:short)' | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' || echo '')
+          merged_branches=$(git branch --merged develop | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}")
           echo "Merged branches: ${merged_branches}"
 
       # - name: Delete branches
