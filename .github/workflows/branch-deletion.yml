@@ -22,16 +22,17 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" || "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "Current branch is develop or main"
+            echo "$(git rev-parse --abbrev-ref HEAD)"
           else
             echo "Current branch is not develop or main"
           fi
-      - name: Delete branches
-        run: |
-          branches="${GITHUB_REF#refs/heads/}"
-          for branch in $branches; do
-            echo "Deleting branch $branch"
-            # git push origin --delete "$branch"
-          done
+      # - name: Delete branches
+      #   run: |
+      #     branches="${GITHUB_REF#refs/heads/}"
+      #     for branch in $branches; do
+      #       echo "Deleting branch $branch"
+      #       # git push origin --delete "$branch"
+      #     done
 
       - name: Verify deleted branches
         run: |
