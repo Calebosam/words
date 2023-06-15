@@ -12,20 +12,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Get merged branches
-        id: merged_branches
-        run: |
-          git fetch --prune --quiet
-          merged_branches=$(git branch --merged develop | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}")
-          echo "Merged branches: ${merged_branches}"
-
-      # - name: Delete branches
+      # - name: Get merged branches
+      #   id: merged_branches
       #   run: |
-      #     branches="del-a del-b"
-      #     for branch in $branches; do
-      #       echo "Deleting branch $branch"
-      #       git push origin --delete "$branch"
-      #     done
+      #     git fetch --prune --quiet
+      #     merged_branches=$(git branch --merged develop | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}")
+      #     echo "Merged branches: ${merged_branches}"
+      - name: Check current branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" || "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "Current branch is develop or main"
+          else
+            echo "Current branch is not develop or main"
+          fi
+      - name: Delete branches
+        run: |
+          branches="${GITHUB_REF#refs/heads/}"
+          for branch in $branches; do
+            echo "Deleting branch $branch"
+            # git push origin --delete "$branch"
+          done
 
       - name: Verify deleted branches
         run: |
