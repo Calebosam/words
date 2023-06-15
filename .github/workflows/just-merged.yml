@@ -1,0 +1,20 @@
+name: Delete Merged Branch
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  delete_merged_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Delete merged branch
+        run: |
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          if [ "$branch_name" != "develop" ]; then
+            git push origin --delete "$branch_name"
+          fi
