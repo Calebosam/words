@@ -22,7 +22,7 @@ jobs:
 
       - name: Delete branches
         run: |
-          branches="${{ steps.merged_branches.outputs.merged_branches }}"
+          branches="origin/dev"
           for branch in $branches; do
             echo "Deleting branch $branch"
             git push origin --delete "$branch"
