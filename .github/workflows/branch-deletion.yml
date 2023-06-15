@@ -7,7 +7,7 @@ on:
 jobs:
   delete_merged_branches:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -16,16 +16,18 @@ jobs:
         id: merged_branches
         run: |
           git fetch --prune --quiet
-          git branch --merged develop | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}"
-      
+          merged_branches=$(git branch --merged develop --format='%(refname:short)' | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' || echo '')
+          # git branch --merged develop | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}"
+          echo "{merged_branches}={merged_branches}" >> $GITHUB_OUTPUT
+
       - name: Delete branches
         run: |
-          branches="${{ steps.merged_branches.outputs.stdout }}"
+          branches="${{ steps.merged_branches.outputs.merged_branches }}"
           for branch in $branches; do
             echo "Deleting branch $branch"
-            git push origin --delete "$branch" || echo "Failed to delete branch $branch"
+            # git push origin --delete "$branch" || echo "Failed to delete branch $branch"
           done
-          
+
       - name: Verify deleted branches
         run: |
           git fetch --prune --quiet
