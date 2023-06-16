@@ -12,16 +12,14 @@ jobs:
     steps:
       - name: Check if branch is merged
         id: check-merge
-        uses: actions/github-script@v5
+        uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branch = process.env.GITHUB_REF.replace('refs/heads/', '');
-            const gh = require('@actions/github');
-            const octokit = gh.getOctokit(process.env.GITHUB_TOKEN);
-            const { data: pullRequests } = await octokit.pulls.list({
-              owner: process.env.GITHUB_REPOSITORY_OWNER,
-              repo: process.env.GITHUB_REPOSITORY,
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               state: 'closed',
               sort: 'updated',
               direction: 'desc',
