@@ -1,0 +1,25 @@
+name: Delete PR Head Branch
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  delete-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is merged
+        id: check-merge
+        run: echo "PR_MERGED=true"
+        if: github.event.pull_request.merged == true
+
+      - name: Delete branch
+        if: steps.check-merge.outputs.PR_MERGED
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git fetch --prune
+          git branch -d ${{ github.event.pull_request.head.ref }}
+          git push origin --delete ${{ github.event.pull_request.head.ref }}

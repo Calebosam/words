@@ -1,0 +1,38 @@
+name: Delete Merged Branch
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  delete-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if branch is merged
+        id: check-merge
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branch = process.env.GITHUB_REF.replace('refs/heads/', '');
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 1
+            });
+            const pr = pullRequests.find(pull => pull.head.ref === branch);
+            return pr && pr.merged;
+
+      - name: Delete branch
+        if: steps.check-merge.outputs.result == 'true'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git fetch --prune
+          git branch -d ${{ github.ref }}
+          git push origin --delete ${{ github.ref }}

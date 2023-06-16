@@ -1,0 +1,33 @@
+name: Delete Merged Branches
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  delete_merged_branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Get merged branches
+        id: merged_branches
+        run: |
+          git fetch --prune --quiet
+          git branch --merged develop | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}"
+
+      - name: Delete branches
+        run: |
+          branches="${{ steps.merged_branches.outputs.stdout }}"
+          for branch in $branches; do
+            echo "Deleting branch $branch"
+            branch_name=$(echo $branch | awk '{print $NF}')
+            curl -X DELETE -u ${{ secrets.GITHUB_TOKEN }} "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$branch_name"
+          done
+
+      - name: Verify deleted branches
+        run: |
+          git fetch --prune --quiet
+          git branch --remote | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$'

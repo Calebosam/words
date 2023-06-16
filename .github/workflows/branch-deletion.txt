@@ -1,0 +1,40 @@
+name: Delete Merged Branches
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  delete_merged_branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # - name: Get merged branches
+      #   id: merged_branches
+      #   run: |
+      #     git fetch --prune --quiet
+      #     merged_branches=$(git branch --merged develop | grep -v 'develop$' | grep -v 'main$' | grep -v 'staging$' | xargs -r -I{} echo "Deleting branch {}")
+      #     echo "Merged branches: ${merged_branches}"
+      - name: Check current branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" || "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "Current branch is develop or main"
+            echo "$(git rev-parse --abbrev-ref HEAD)"
+          else
+            echo "Current branch is not develop or main"
+          fi
+      # - name: Delete branches
+      #   run: |
+      #     branches="${GITHUB_REF#refs/heads/}"
+      #     for branch in $branches; do
+      #       echo "Deleting branch $branch"
+      #       # git push origin --delete "$branch"
+      #     done
+
+      - name: Verify deleted branches
+        run: |
+          git fetch --prune --quiet
+          git branch --remote | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$'
