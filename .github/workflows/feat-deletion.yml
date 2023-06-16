@@ -1,13 +1,14 @@
-name: Delete Branch on Merge
+name: Delete Merged Branch
+
 on:
   push:
     branches:
-      - "feat/*"
+      - '*'
 
 jobs:
   delete-branch:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Check if branch is merged
         id: check-merge
@@ -16,6 +17,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branch = process.env.GITHUB_REF.replace('refs/heads/', '');
+            const github = require('@actions/github');
             const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
             const { data: pullRequests } = await octokit.pulls.list({
               owner: process.env.GITHUB_REPOSITORY_OWNER,
@@ -31,8 +33,8 @@ jobs:
       - name: Delete branch
         if: steps.check-merge.outputs.result == 'true'
         run: |
-          git config --global user.email "caleb.osam@amalitech"
-          git config --global user.name "Calebosam"
-          git checkout ${{ github.base_ref }}
-          git branch -D ${{ github.ref }}
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git fetch --prune
+          git branch -d ${{ github.ref }}
           git push origin --delete ${{ github.ref }}
