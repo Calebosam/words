@@ -1,0 +1,37 @@
+name: Delete Merged Branches
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  delete_merged_branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Get merged branches and delete them
+        
+        run: |
+            BRANCH_LIST=`git branch -r | grep -v -- '->'`
+            for branch in ${BRANCH_LIST[@]}
+            do  
+                DEFAULT_BRANCH="origin/"${BRANCH_NAME}
+                if [ $branch != $DEFAULT_BRANCH ]; then
+                    git branch --track ${branch##origin/} $branch; 
+                fi
+            done
+            git checkout $BRANCH_NAME 
+            if [ `git branch --merged | wc -l` == 1 ]; then
+                echo "🥳 No merged branch found"
+                exit 0
+            else
+                git branch --merged $BRANCH_NAME | egrep -v "(^\*|$BRANCH_NAME)" | xargs git push origin -d
+                echo "🗑️ Delete All Merged Branch!" 
+            fi   
+      - name: Verify deleted branches
+        run: |
+          git fetch --prune --quiet
+          git branch --remote | grep -v 'develop$' | grep -v 'master$' | grep -v 'staging$'
